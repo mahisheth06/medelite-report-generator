@@ -1,16 +1,11 @@
 # routes/facility.py
-# Defines the HTTP endpoints for facility-related operations.
-#
-# A "route" in FastAPI is a function that handles requests to a specific URL.
-# We keep routes thin — they handle HTTP concerns (status codes, responses)
-# and delegate all business logic to the service layer.
+
 
 from fastapi import APIRouter, HTTPException
 from app.models.facility import FacilityResponse
 from app.services.cms_service import fetch_facility_by_ccn
 
-# APIRouter is like a mini FastAPI app — it groups related routes together.
-# We'll register this router in main.py with a prefix of "/api"
+
 router = APIRouter()
 
 

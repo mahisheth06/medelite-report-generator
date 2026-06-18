@@ -1,21 +1,12 @@
 # models/facility.py
-# Defines the data shapes (schemas) for our application.
-# Pydantic models serve two purposes:
-#   1. Validate that data has the correct types
-#   2. Automatically serialize Python objects to JSON for API responses
+
 
 from pydantic import BaseModel
 from typing import Optional
 
 
 class FacilityResponse(BaseModel):
-    """
-    The complete data shape returned to the frontend after a CCN lookup.
-    
-    Fields marked Optional[str] can be None if the CMS API doesn't have
-    that data for a particular facility — we handle missing data gracefully
-    rather than crashing.
-    """
+
 
     # --- Fields from CMS API ---
     ccn: str                              # The CCN the user searched for

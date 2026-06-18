@@ -14,9 +14,7 @@ app = FastAPI(
 )
 
 # --- CORS Configuration ---
-# This tells the browser which frontend origins are allowed to call our API.
-# During development, our React app runs on localhost:5173.
-# During production, it will be our Vercel URL.
+
 origins = [
     "http://localhost:5173",         # Vite dev server
     "http://localhost:3000",         # Fallback local port
@@ -32,14 +30,12 @@ app.add_middleware(
 )
 
 # --- Register Routers ---
-# We attach our facility router with a prefix of "/api"
-# This means our endpoint becomes: GET /api/facility/{ccn}
+
 app.include_router(facility_router, prefix="/api")
 
 
 # --- Health Check Endpoint ---
-# A simple endpoint to verify the server is running.
-# Render and other deployment platforms use this to check if the app is alive.
+
 @app.get("/")
 async def health_check():
     return {
