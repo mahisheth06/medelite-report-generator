@@ -6,9 +6,8 @@ internal operational notes, and download a polished PDF assessment report.
 
 ## Live Application
 
-- **Frontend:** [Coming — Vercel URL]
-- **Backend API:** [Coming — Render URL]
-
+- **Frontend:** https://medelite-report-generator.vercel.app
+- **Backend API:** https://medelite-report-generator.onrender.com/
 ## Tech Stack
 
 | Layer | Technology |
