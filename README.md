@@ -1,16 +1,6 @@
-# Medelite Facility Assessment Report Generator
-
-A web application that allows Medelite directors to look up skilled nursing
-facilities by CCN (CMS Certification Number), combine public CMS data with
-internal operational notes, and download a polished PDF assessment report.
-
-## Live Application
-
-- **Frontend:** [https://medelite-report-generator.vercel.app](https://medelite-report-generator-eight.vercel.app/)
-- **Backend API:** https://medelite-report-generator.onrender.com/
 # MedElite Facility Assessment Report Generator
 
-A full-stack web application for looking up skilled nursing facilities by CMS Certification Number (CCN), combining public CMS data with internal operational notes, and exporting a branded PDF assessment report — built as a technical assessment for Medelite.
+A full-stack web application for looking up skilled nursing facilities by CMS Certification Number (CCN), combining public CMS data with internal operational notes, and exporting a branded PDF assessment report; *built as a technical assessment for Medelite.*
 
 ---
 
@@ -27,7 +17,7 @@ A full-stack web application for looking up skilled nursing facilities by CMS Ce
 
 ## Overview
 
-Healthcare operators need fast, consistent facility assessments — not manual data entry across multiple systems. MedElite solves this by pulling live CMS data directly into a structured report, letting directors focus on the notes that matter rather than copy-pasting public records.
+Healthcare operators need fast, consistent facility assessments; not manual data entry across multiple systems. This is solved by pulling live CMS data directly into a structured report, letting directors focus on the notes that matter rather than copy-pasting public records.
 
 **Core flow:**
 1. Enter a facility's CCN
@@ -131,7 +121,7 @@ Use CCN `686123` (Kendall Lakes Healthcare and Rehab Center, Miami FL) to valida
 ## Design Decisions
 
 **Why client-side PDF generation?**
-Using jsPDF in the browser removes the need for a backend PDF endpoint entirely — no file storage, no server-side rendering dependencies, instant downloads. The tradeoff is less layout control vs. server-side tools like WeasyPrint, but for a structured one-page report it's the right call.
+Using jsPDF in the browser removes the need for a backend PDF endpoint entirely — no file storage, no server-side rendering dependencies, instant downloads. 
 
 **Why a FastAPI proxy for the CMS API?**
 Direct calls from the browser to the CMS API are blocked by CORS. The FastAPI backend acts as a lightweight proxy, keeping the frontend clean and making it easy to add caching or rate-limiting later.
@@ -162,10 +152,7 @@ medelite-report-generator/
 
 ## Author
 
-**Mahi Sheth** — CS Student @ University of Cincinnati, AI Engineering Extern @ Pfizer
+**Mahi Sheth** — CS Student @ University of Cincinnati, AI Engineering Extern for Pfizer
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-ff69b4?style=flat-square&logo=github&logoColor=white)](https://mahisheth06.github.io/personalportfolio)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/mahisheth06/)
-
-
-**Note** Built as a technical assessment for Medelite.
