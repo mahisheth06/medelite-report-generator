@@ -70,6 +70,9 @@ to validate all data fields match the reference document.
   restrictions on direct API calls from the frontend
 - Empty manual input fields render as dashes in the PDF output
 
-## Author
+> **Note:** The backend is hosted on Render's free tier which may 
+> spins down after 15 minutes of inactivity. The first request 
+> may take 30-60 seconds to wake up. Subsequent requests are instant.
 
+## Author
 Built as a technical assessment for Medelite.
