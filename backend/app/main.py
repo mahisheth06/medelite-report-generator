@@ -19,6 +19,7 @@ origins = [
     "http://localhost:5173",
     "http://localhost:3000",
     "https://medelite-report-generator.vercel.app",
+    "https://medelite-report-generator-eight.vercel.app",
     "https://*.vercel.app",
 ]
 
