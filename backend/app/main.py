@@ -16,9 +16,10 @@ app = FastAPI(
 # --- CORS Configuration ---
 
 origins = [
-    "http://localhost:5173",         # Vite dev server
-    "http://localhost:3000",         # Fallback local port
-    "https://*.vercel.app",          # Any Vercel deployment
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://medelite-report-generator.vercel.app",
+    "https://*.vercel.app",
 ]
 
 app.add_middleware(
