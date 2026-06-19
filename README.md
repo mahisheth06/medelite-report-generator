@@ -11,6 +11,8 @@ A full-stack web application for looking up skilled nursing facilities by CMS Ce
 | **Frontend** | [medelite-report-generator.vercel.app](https://medelite-report-generator-eight.vercel.app/) |
 | **Backend API** | [medelite-report-generator.onrender.com](https://medelite-report-generator.onrender.com/) |
 
+*Use 686123 as CCN for test case*
+
 > **Note:** The backend runs on Render's free tier and may spin down after 15 minutes of inactivity. The first request can take 30–60 seconds to wake up — subsequent requests are instant.
 
 ---
