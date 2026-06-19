@@ -1,136 +1,110 @@
-// utils/pdfGenerator.js
-// Generates the Facility Assessment Snapshot PDF using jsPDF.
-
-
 import { jsPDF } from 'jspdf'
 
-// --- Page Layout Constants ---
-const PAGE_WIDTH = 216    // US Letter width in mm
-const PAGE_HEIGHT = 279   // US Letter height in mm
-const MARGIN = 20         // Left and right margin in mm
-const COL1_WIDTH = 90     // Width of the label column
-const COL2_X = MARGIN + COL1_WIDTH  // Where the value column starts
-const COL2_WIDTH = PAGE_WIDTH - MARGIN - COL1_WIDTH - MARGIN  // Value column width
-const ROW_HEIGHT = 10     // Height of each table row in mm
-const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2  // Total usable width
-
+const PAGE_WIDTH = 216
+const PAGE_HEIGHT = 279
+const MARGIN = 20
+const COL1_WIDTH = 95
+const COL2_X = MARGIN + COL1_WIDTH
+const COL2_WIDTH = PAGE_WIDTH - MARGIN - COL1_WIDTH - MARGIN
+const ROW_HEIGHT = 10
+const LINE_HEIGHT = 5
 
 export const generatePDF = (facilityData, manualInputs) => {
   const doc = new jsPDF('portrait', 'mm', 'letter')
-
-  // --- Determine the display name ---
   const displayName = manualInputs.customName?.trim() || facilityData.legal_name
 
-  // --- Starting Y position tracker ---
   let y = MARGIN
 
-  // =========================================================
-  // SECTION 1: BRANDING HEADER
-  // =========================================================
-
-  // "INFINITE — Managed by MEDELITE" — centered, bold, large
+  // --- HEADER ---
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(16)
+  doc.setFontSize(18)
+  doc.setTextColor(20, 20, 20)
   doc.text('INFINITE \u2014 Managed by MEDELITE', PAGE_WIDTH / 2, y, { align: 'center' })
-  y += 8
+  y += 9
 
-  // "FACILITY ASSESSMENT SNAPSHOT" — centered, bold, medium
   doc.setFontSize(13)
   doc.text('FACILITY ASSESSMENT SNAPSHOT', PAGE_WIDTH / 2, y, { align: 'center' })
   y += 7
 
-  // State abbreviation — centered, normal weight
   doc.setFont('helvetica', 'normal')
-  doc.setFontSize(12)
+  doc.setFontSize(11)
+  doc.setTextColor(80, 80, 80)
   doc.text(facilityData.state || '', PAGE_WIDTH / 2, y, { align: 'center' })
-  y += 8
+  y += 9
 
-  // =========================================================
-  // SECTION 2: DATA TABLE
-  // =========================================================
- 
-
-  // Helper function: draws one table row with a bottom border
+  // --- TABLE ---
   const drawRow = (label, value) => {
-    const safeValue = value !== null && value !== undefined ? String(value) : '—'
+    const safeValue = value !== null && value !== undefined && value !== '' ? String(value) : '\u2014'
+    const labelLines = doc.splitTextToSize(label, COL1_WIDTH - 6)
+    const valueLines = doc.splitTextToSize(safeValue, COL2_WIDTH - 6)
+    const numLines = Math.max(labelLines.length, valueLines.length)
+    const rowH = Math.max(ROW_HEIGHT, numLines * LINE_HEIGHT + 5)
 
-    // Draw the bottom border line of this row
-    doc.setDrawColor(200, 200, 200)  // Light gray
-    doc.setLineWidth(0.2)
-    doc.line(MARGIN, y + ROW_HEIGHT, PAGE_WIDTH - MARGIN, y + ROW_HEIGHT)
-
-    // Label — bold, left column
+    // Row background (subtle alternating would go here — keeping white for clean look)
+    // Label
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(10)
     doc.setTextColor(40, 40, 40)
-    doc.text(label, MARGIN + 2, y + 6.5)
+    doc.text(labelLines, MARGIN + 3, y + 6.5)
 
-    // Value — italic, right column
+    // Value
     doc.setFont('helvetica', 'italic')
     doc.setFontSize(10)
     doc.setTextColor(60, 60, 60)
-    doc.text(safeValue, COL2_X + 2, y + 6.5)
+    doc.text(valueLines, COL2_X + 3, y + 6.5)
 
-    y += ROW_HEIGHT
+    // Row bottom border
+    doc.setDrawColor(210, 210, 210)
+    doc.setLineWidth(0.2)
+    doc.line(MARGIN, y + rowH, PAGE_WIDTH - MARGIN, y + rowH)
+
+    y += rowH
   }
 
-  // Draw the outer table border (top line)
-  doc.setDrawColor(200, 200, 200)
-  doc.setLineWidth(0.2)
-  doc.line(MARGIN, y, PAGE_WIDTH - MARGIN, y)
-
-  // Draw vertical divider between columns (full table height)
   const tableTopY = y
 
-  // --- Draw all rows ---
+  // Top border
+  doc.setDrawColor(180, 180, 180)
+  doc.setLineWidth(0.4)
+  doc.line(MARGIN, tableTopY, PAGE_WIDTH - MARGIN, tableTopY)
+
+  // All rows
   drawRow('Name of Facility', displayName)
   drawRow('Location', facilityData.full_address)
   drawRow('EMR', manualInputs.emr)
-  drawRow('Census Capacity', facilityData.certified_beds)
+  drawRow('Census Capacity', String(facilityData.certified_beds))
   drawRow('Current Census', manualInputs.currentCensus)
   drawRow('Type of Patient', manualInputs.patientType)
   drawRow('Previous Coverage from Medelite', manualInputs.previousCoverage)
   drawRow('Previous Provider Performance from Medelite', manualInputs.previousPerformance)
   drawRow('Medical Coverage', manualInputs.medicalCoverage)
-  drawRow('Overall Star Rating', facilityData.overall_rating)
-  drawRow('Health Inspection', facilityData.health_inspection_rating)
-  drawRow('Staffing', facilityData.staffing_rating)
-  drawRow('Quality of Resident Care', facilityData.quality_rating)
+  drawRow('Overall Star Rating', String(facilityData.overall_rating))
+  drawRow('Health Inspection', String(facilityData.health_inspection_rating))
+  drawRow('Staffing', String(facilityData.staffing_rating))
+  drawRow('Quality of Resident Care', String(facilityData.quality_rating))
 
   const tableBottomY = y
 
-  // Draw outer border (left, right, bottom lines)
-  doc.setDrawColor(180, 180, 180)
-  doc.setLineWidth(0.3)
-  doc.line(MARGIN, tableTopY, MARGIN, tableBottomY)              // Left border
-  doc.line(PAGE_WIDTH - MARGIN, tableTopY, PAGE_WIDTH - MARGIN, tableBottomY)  // Right border
-  doc.line(MARGIN, tableBottomY, PAGE_WIDTH - MARGIN, tableBottomY)  // Bottom border
+// Outer border
+  doc.setDrawColor(150, 150, 150)
+  doc.setLineWidth(0.5)
+  doc.rect(MARGIN, tableTopY, PAGE_WIDTH - MARGIN * 2, tableBottomY - tableTopY)
 
-  // Draw vertical column divider
-  doc.setDrawColor(200, 200, 200)
-  doc.setLineWidth(0.2)
+  // Column divider — draw explicitly with high contrast
+  doc.setDrawColor(150, 150, 150)
+  doc.setLineWidth(0.5)
   doc.line(COL2_X, tableTopY, COL2_X, tableBottomY)
 
-  y += 10
+  y += 8
 
-  // =========================================================
-  // SECTION 3: MEDICARE HYPERLINK
-  // =========================================================
-
+  // --- MEDICARE LINK ---
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
-  doc.setTextColor(0, 0, 255)   // Blue color for the link
-
-  const linkText = `Medicare Care Compare: ${facilityData.medicare_url}`
+  doc.setTextColor(0, 102, 204)
+  const linkText = 'View on Medicare Care Compare: ' + facilityData.medicare_url
   doc.textWithLink(linkText, MARGIN, y, { url: facilityData.medicare_url })
 
-  // Reset text color to black for anything after
-  doc.setTextColor(0, 0, 0)
-
-  // =========================================================
-  // TRIGGER DOWNLOAD
-  // =========================================================
-  
+  // --- SAVE ---
   const safeName = displayName.replace(/[^a-z0-9]/gi, '_').toLowerCase()
-  doc.save(`facility_assessment_${safeName}.pdf`)
+  doc.save('facility_assessment_' + safeName + '.pdf')
 }
