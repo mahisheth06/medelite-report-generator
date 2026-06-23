@@ -1,6 +1,7 @@
 # MedElite Facility Assessment Report Generator
 
-A full-stack web application for looking up skilled nursing facilities by CMS Certification Number (CCN), combining public CMS data with internal operational notes, and exporting a branded PDF assessment report; *built as a technical assessment for Medelite.*
+A full-stack web application that allows Medelite directors to look up skilled nursing facilities by CCN (CMS Certification Number), combine public CMS data with internal operational notes, and download a polished PDF or Word document
+assessment report; *built as a technical assessment for Medelite.*
 
 ---
 
@@ -36,8 +37,8 @@ Healthcare operators need fast, consistent facility assessments; not manual data
 |---|---|---|
 | Frontend | React 18, Vite, Tailwind CSS | Fast dev server, component-based UI, utility-first styling |
 | Backend | Python, FastAPI, Uvicorn | Async-first, auto-generated docs, handles CORS proxy for CMS API |
-| PDF Generation | jsPDF (client-side) | Instant browser downloads without a backend PDF endpoint |
-| Data Source | CMS Provider Data Catalog API | Live, authoritative nursing facility data |
+| PDF Generation | jsPDF (client-side) | Instant browser downloads without a backend PDF endpoint | Word Export | 
+docx + file-saver (client-side) | Data Source | CMS Provider Data Catalog API | Live, authoritative nursing facility data |
 | Deployment | Vercel (frontend), Render (backend) | Zero-config CI/CD for both layers |
 
 ---
@@ -81,6 +82,10 @@ Healthcare operators need fast, consistent facility assessments; not manual data
 - **One-click PDF export** — client-side generation via jsPDF with branded header and clickable Medicare Care Compare link
 - **Dynamic state abbreviation display**
 - **Empty field handling** — unfilled fields render as dashes in the PDF output
+
+### Bonus Features
+- Word Document export (.docx) — fully editable report
+- Visual star rating cards with progress bars for all 4 CMS ratings
 
 ---
 
@@ -137,24 +142,45 @@ Zero-config deployments for both layers. Vercel handles the React build and CDN 
 
 ```
 medelite-report-generator/
+
 ├── backend/
 │   ├── app/
-│   │   └── main.py          # FastAPI app, CMS proxy endpoint
+│   │   ├── main.py          # FastAPI app, CORS config
+│   │   ├── routes/
+│   │   │   └── facility.py  # CCN lookup endpoint
+│   │   ├── services/
+│   │   │   └── cms_service.py # CMS API integration
+│   │   └── models/
+│   │       └── facility.py  # Pydantic data models
 │   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   └── main.jsx
-│   ├── index.html
-│   └── vite.config.js
-└── README.md
+└── frontend/
+└── src/
+├── App.jsx           # Root component, global state
+├── services/
+│   └── api.js        # Backend HTTP client
+└── utils/
+├── pdfGenerator.js   # jsPDF export
+└── docxGenerator.js  # Word document export
 ```
 
 ---
+## Engineering Assumptions
 
+- PDF and Word generation are handled client-side for instant browser
+  downloads without requiring a backend file-serving endpoint
+- The INFINITE brand name is hardcoded static text and is never replaced
+  by facility data per the assignment branding guardrail
+- CMS API is queried via a FastAPI backend proxy to avoid browser CORS
+  restrictions on direct frontend API calls
+- Empty manual input fields render as dashes in exported documents
+- Backend hosted on Render free tier — first request after inactivity
+  may take 30-60 seconds to wake up. UptimeRobot pings every 5 minutes
+  to minimize cold starts during business hours
+
+---
 ## Author
 
-**Mahi Sheth** — CS Student @ University of Cincinnati, AI Engineering Extern for Pfizer
+**Mahi Sheth** — CS Student @ University of Cincinnati, AI Engineering Extern for Pfizer (Via Extern)
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-ff69b4?style=flat-square&logo=github&logoColor=white)](https://mahisheth06.github.io/personalportfolio)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/mahisheth06/)
