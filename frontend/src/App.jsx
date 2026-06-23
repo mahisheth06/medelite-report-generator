@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { fetchFacilityByCCN } from './services/api'
 import { generatePDF } from './utils/pdfGenerator'
+import { generateDOCX } from './utils/docxGenerator'
 
 const StarRating = ({ rating }) => {
   if (!rating) return <span className="text-gray-400">—</span>
@@ -264,17 +265,22 @@ function App() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pb-8">
-              <p className="text-xs text-gray-400">
-                Fill in manual fields above before downloading
-              </p>
-              <button
-                onClick={() => generatePDF(facilityData, manualInputs)}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
-              >
-                <span>&#8595;</span>
-                Download PDF
-              </button>
+          <div className="flex items-center justify-between pb-8">
+              <p className="text-xs text-gray-400">Fill in manual fields above before downloading</p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => generateDOCX(facilityData, manualInputs)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-sm font-bold transition-colors shadow-sm"
+                >
+                  Download Word Doc
+                </button>
+                <button
+                  onClick={() => generatePDF(facilityData, manualInputs)}
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg text-sm font-bold transition-colors shadow-sm"
+                >
+                  Download PDF
+                </button>
+              </div>
             </div>
           </>
         )}
